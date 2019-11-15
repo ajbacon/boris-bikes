@@ -31,17 +31,35 @@ describe DockingStation do
       expect(station.bike_arr).to eq([bike1])
     end
 
-    it "raises an error if trying to dock a bike when the docking station is full" do
+    it "raises an error if trying to dock a bike when the docking station is full for default capacity" do
       station = DockingStation.new
-      station.dock(Bike.new)
-      expect{ (DockingStation::DEFAULT_CAPACITY + 1).times {station.dock(Bike.new)}}.to raise_error RuntimeError
+      expect{ (station::capacity + 1).times {station.dock(Bike.new)}}.to raise_error RuntimeError
     end
+
+    it "raises an error if trying to dock a bike when the docking station is full for user set capacity of 21" do
+      station = DockingStation.new(25)
+      expect{ (station::capacity + 1).times {station.dock(Bike.new)}}.to raise_error RuntimeError
+    end
+
+    it "raises an error if trying to dock a bike when the docking station is full for user set capacity of 19" do
+      station = DockingStation.new(19)
+      expect{ (station::capacity + 1).times {station.dock(Bike.new)}}.to raise_error RuntimeError
+    end
+
+
   end
 
-  describe "#initialize" do
-    it "should exepect 1 argument when initializing the new docking station" do
 
-      expect(subject(DockingStation::DEFAULT_CAPACITY)).to respond_to(:initialize).with(1).argument
+
+  describe "initialize" do
+    it "should have a capacity of 25 when 25 is passed as an argument" do
+      station = DockingStation.new(25)
+      expect(station::capacity).to eq(25)
+    end
+
+    it "should have a default capacity of 20" do 
+      station = DockingStation.new
+      expect(station::capacity).to eq(20)
     end
   end
 end
