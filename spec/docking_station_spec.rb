@@ -12,6 +12,12 @@ describe DockingStation do
       expect(subject).to respond_to(:release_bike)
     end
 
+    it "should release a working bike" do
+      station.dock(working_bike)
+      bike = station.release_bike
+      expect(bike).not_to be_broken
+    end
+
     it "raise an error when there is no bike docked" do
       expect{station.release_bike}.to raise_error RuntimeError
     end
