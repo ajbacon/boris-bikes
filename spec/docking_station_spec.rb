@@ -5,11 +5,6 @@ describe DockingStation do
 
     station = DockingStation.new
 
-    # before(:each) do
-    #   working_bike = double(:working_bike, broken?: nil)
-    #   broken_bike = double(:broken_bike, broken?: true)
-    # end
-
     let!(:broken_bike) { double(:broken_bike, broken?: true) }
     let!(:working_bike) { double(:working_bike, broken?: nil) }
 
