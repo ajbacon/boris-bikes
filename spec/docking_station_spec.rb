@@ -2,34 +2,36 @@ require 'boris-bikes'
 
 describe DockingStation do
   describe "#release_bike" do
+
+    station = DockingStation.new
+
+    # before(:each) do
+    #   working_bike = double(:working_bike, broken?: nil)
+    #   broken_bike = double(:broken_bike, broken?: true)
+    # end
+
+    let!(:broken_bike) { double(:broken_bike, broken?: true) }
+    let!(:working_bike) { double(:working_bike, broken?: nil) }
+
     it "release bike new bike" do
       expect(subject).to respond_to(:release_bike)
     end
 
     it "raise an error when there is no bike docked" do
-      station = DockingStation.new
       expect{station.release_bike}.to raise_error RuntimeError
     end
 
     it "should not release a bike if all docked bikes are broken" do
-      station = DockingStation.new
-      bike = Bike.new
-      bike.report_broken
-      station.dock(bike)
+      station.dock(broken_bike)
       expect{station.release_bike}.to raise_error RuntimeError
     end
 
     it "should release a working bike if working and broken bikes available" do
-      station = DockingStation.new
-      bike1 = Bike.new
-      bike2 = Bike.new
-      bike1.report_broken
-      station.dock(bike1)
-      station.dock(bike2)
+      station.dock(working_bike)
+      station.dock(broken_bike)
       bike = station.release_bike
       expect(bike).not_to be_broken
     end
-
 
   end
 
@@ -52,9 +54,13 @@ describe DockingStation do
       expect(station.bike_arr).to eq([bike1])
     end
 
+    let(:bike) { double :bike }
+    
+
     it "raises an error if trying to dock a bike when the docking station is full for default capacity" do
       station = DockingStation.new
-      expect{ (station::capacity + 1).times {station.dock(Bike.new)}}.to raise_error RuntimeError
+      allow(bike).to receive(:broken?).and_return(false)
+      expect{ (station::capacity + 1).times {station.dock(bike)}}.to raise_error RuntimeError
     end
 
     it "raises an error if trying to dock a bike when the docking station is full for user set capacity of 21" do
